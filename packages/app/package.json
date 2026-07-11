@@ -5,6 +5,9 @@
     "private": true,
     "access": "private",
     "dependencies": {
+        "@tauri-apps/api": "2.11.1",
+        "carbon-components-svelte": "0.110.0",
+        "carbon-icons-svelte": "13.13.0",
         "svelte": "5.56.4"
     }
 }

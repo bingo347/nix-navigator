@@ -12,6 +12,7 @@ publish = false
 [workspace.dependencies]
 tauri = { version = "2.11.5", features = ["tracing", "config-toml"] }
 tauri-build = "2.6.3"
+serde = { version = "1.0.228", features = ["derive"] }
 
 [workspace.lints]
 clippy.correctness = { priority = -1, level = "deny" }
