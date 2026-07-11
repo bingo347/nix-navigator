@@ -1,0 +1,25 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Dmitry Belyaev <mail@d-belyaev.ru>"]
+license = "BSD-3-Clause"
+publish = false
+
+[workspace.dependencies]
+tauri = { version = "2.11.5", features = ["tracing", "config-toml"] }
+tauri-build = "2.6.3"
+
+[workspace.lints]
+clippy.correctness = { priority = -1, level = "deny" }
+clippy.suspicious = { priority = -1, level = "deny" }
+clippy.complexity = { priority = -1, level = "deny" }
+clippy.perf = { priority = -1, level = "deny" }
+clippy.style = { priority = -1, level = "warn" }
+clippy.pedantic = { priority = -1, level = "warn" }
+clippy.cargo = { priority = -1, level = "warn" }
+clippy.nursery = { priority = -1, level = "warn" }
+clippy.multiple-crate-versions = "allow"

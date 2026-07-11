@@ -1,0 +1,11 @@
+use tauri::{Builder, Runtime};
+
+pub trait BuilderExt {
+    fn with_commands(self) -> Self;
+}
+
+impl<R: Runtime> BuilderExt for Builder<R> {
+    fn with_commands(self) -> Self {
+        self.invoke_handler(tauri::generate_handler![])
+    }
+}

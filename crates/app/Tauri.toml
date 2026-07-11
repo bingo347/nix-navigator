@@ -1,0 +1,24 @@
+productName = "nix-navigator"
+version = "0.1.0"
+identifier = "ru.d-belyaev.nix-navigator"
+
+[build]
+beforeDevCommand = "npx vite dev"
+beforeBuildCommand = "npx vite build"
+devUrl = "http://localhost:1420"
+frontendDist = "../../target/@ui"
+
+[app.security.csp]
+default-src = "'self' customprotocol: asset:"
+connect-src = "ipc: http://ipc.localhost"
+font-src = "'self' asset: http://asset.localhost blob: data:"
+img-src = "'self' asset: http://asset.localhost blob: data:"
+style-src = "'unsafe-inline' 'self' asset: http://asset.localhost blob: data:"
+
+[[app.windows]]
+label = "main"
+title = "Nix Navigator"
+url = "/app/app.html"
+width = 1600
+height = 1200
+devtools = true

@@ -1,0 +1,10 @@
+{
+    "$schema": "../../schemas/package.schema.json",
+    "name": "@nxn/app",
+    "type": "module",
+    "private": true,
+    "access": "private",
+    "dependencies": {
+        "svelte": "5.56.4"
+    }
+}
