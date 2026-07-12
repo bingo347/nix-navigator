@@ -1,4 +1,4 @@
-productName = "nix-navigator"
+productName = "Nix Navigator"
 version = "0.1.0"
 identifier = "ru.d-belyaev.nix-navigator"
 
@@ -22,3 +22,14 @@ url = "/app/app.html"
 width = 1600
 height = 1200
 devtools = true
+
+[bundle]
+active = true
+targets = "all"
+icon = [
+    "icons/32x32.png",
+    "icons/128x128.png",
+    "icons/128x128@2x.png",
+    "icons/icon.icns",
+    "icons/icon.ico",
+]
