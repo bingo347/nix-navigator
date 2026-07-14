@@ -1,0 +1,9 @@
+$sections:
+  testing:
+    test_substitutions: Некоторый текст с подстановками {a} и {b}
+    test_plural:
+      $switch: plural(count)
+      one: Один экземпляр
+      few: "{count} экземпляра"
+      many: "{count} экземпляров"
+    test_reference: "Текст с подстановкой-ссылкой: {test_plural(count)}"

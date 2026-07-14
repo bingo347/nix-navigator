@@ -1,0 +1,35 @@
+$rules:
+  plural:
+    args:
+      number: int
+    do:
+      - if: "number == 1"
+        then: one
+      - else: many
+
+$sections:
+  menu:
+    settings: Settings
+    configuration: Configuration
+    keybindings: Keybindings
+    edit: Edit
+    undo: Undo
+    redo: Redo
+    cut: Cut
+    copy: Copy
+    paste: Paste
+    selectAll: Select all
+    view: View
+    fullscreen: Fullscreen
+    window: Window
+    minimize: Minimize
+    maximize: Maximize
+    closeWindow: Close Window
+    help: Help
+    about: About
+  app:
+    theme: Theme
+    themeLight: Light
+    themeDark: Dark
+    themeSystem: System
+    configuration: Configuration

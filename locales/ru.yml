@@ -1,0 +1,37 @@
+$rules:
+  plural:
+    args:
+      number: int
+    do:
+      - if: "number % 10 == 1 && number % 100 != 11"
+        then: one
+      - if: "number % 10 >= 2 && number % 10 <= 4 && (number % 100 < 10 || number % 100 >= 20)"
+        then: few
+      - else: many
+
+$sections:
+  menu:
+    settings: Настройки
+    configuration: Конфигурация
+    keybindings: Горячие клавиши
+    edit: Правка
+    undo: Отменить
+    redo: Повторить
+    cut: Вырезать
+    copy: Копировать
+    paste: Вставить
+    selectAll: Выделить все
+    view: Вид
+    fullscreen: Полноэкранный режим
+    window: Окно
+    minimize: Свернуть
+    maximize: Развернуть
+    closeWindow: Закрыть окно
+    help: Справка
+    about: О программе
+  app:
+    theme: Тема
+    themeLight: Светлая
+    themeDark: Темная
+    themeSystem: Системная
+    configuration: Конфигурация
