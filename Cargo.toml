@@ -1,6 +1,7 @@
 [workspace]
 members = ["crates/*"]
 resolver = "2"
+default-members = ["crates/app"]
 
 [workspace.package]
 version = "0.1.0"
@@ -10,9 +11,12 @@ license = "BSD-3-Clause"
 publish = false
 
 [workspace.dependencies]
+anyhow = "1.0.103"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_yaml = "0.9.33"
 tauri = { version = "2.11.5", features = ["tracing", "config-toml"] }
 tauri-build = "2.6.3"
-serde = { version = "1.0.228", features = ["derive"] }
+test-case = "3.3.1"
 
 [workspace.lints]
 clippy.correctness = { priority = -1, level = "deny" }
@@ -24,3 +28,4 @@ clippy.pedantic = { priority = -1, level = "warn" }
 clippy.cargo = { priority = -1, level = "warn" }
 clippy.nursery = { priority = -1, level = "warn" }
 clippy.multiple-crate-versions = "allow"
+clippy.use_self = "allow"
