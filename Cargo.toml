@@ -17,6 +17,7 @@ serde_yaml = "0.9.33"
 tauri = { version = "2.11.5", features = ["tracing", "config-toml"] }
 tauri-build = "2.6.3"
 test-case = "3.3.1"
+thiserror = "2.0.18"
 
 [workspace.lints]
 clippy.correctness = { priority = -1, level = "deny" }

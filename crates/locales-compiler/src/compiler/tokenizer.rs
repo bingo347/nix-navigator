@@ -72,11 +72,15 @@ struct IdentifierInner {
     inner: Arc<str>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ParseError {
+    #[error("End of input")]
     EndOfInput,
+    #[error("Invalid token at position {position}")]
     InvalidToken { position: usize },
+    #[error("Invalid float at position {position}")]
     InvalidFloat { position: usize },
+    #[error("Invalid integer at position {position}")]
     InvalidInteger { position: usize },
 }
 
@@ -421,21 +425,6 @@ impl fmt::Display for Literal {
         }
     }
 }
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::EndOfInput => write!(f, "End of input"),
-            Self::InvalidToken { position } => write!(f, "Invalid token at position {position}"),
-            Self::InvalidFloat { position } => write!(f, "Invalid float at position {position}"),
-            Self::InvalidInteger { position } => {
-                write!(f, "Invalid integer at position {position}")
-            }
-        }
-    }
-}
-
-impl std::error::Error for ParseError {}
 
 fn parse_number_literal(
     position: usize,

@@ -2,7 +2,7 @@ use super::{
     Span,
     tokenizer::{Punctuation, TokenStream},
 };
-use std::{collections::VecDeque, fmt, sync::Arc};
+use std::{collections::VecDeque, sync::Arc};
 
 #[derive(Debug, Clone)]
 pub enum Expression {
@@ -35,9 +35,11 @@ pub struct CallExpression {
     pub arguments: Vec<Expression>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ParseError {
+    #[error("End of input")]
     EndOfInput,
+    #[error("Unexpected token at {span}")]
     UnexpectedToken { span: Span },
 }
 
@@ -391,19 +393,6 @@ impl PartialEq for Expression {
         }
     }
 }
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::EndOfInput => write!(f, "End of input"),
-            Self::UnexpectedToken { span } => {
-                write!(f, "Unexpected token at {span}")
-            }
-        }
-    }
-}
-
-impl std::error::Error for ParseError {}
 
 #[cfg(test)]
 mod tests {

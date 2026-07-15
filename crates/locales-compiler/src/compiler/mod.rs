@@ -1,4 +1,4 @@
-use anyhow::Context as _;
+use crate::deserialize_wrapper::DeserializeWrappable;
 use std::fmt;
 
 mod expression;
@@ -6,31 +6,23 @@ mod tokenizer;
 
 pub use expression::Expression;
 
-pub fn parse_expression(input: &str) -> anyhow::Result<Expression> {
-    let tokens = input
-        .parse()
-        .inspect_err(|err| match err {
-            tokenizer::ParseError::EndOfInput => error!("End of input"),
-            tokenizer::ParseError::InvalidToken { position } => {
-                error!("Invalid token at {position}");
-            }
-            tokenizer::ParseError::InvalidFloat { position } => {
-                error!("Invalid float at {position}");
-            }
-            tokenizer::ParseError::InvalidInteger { position } => {
-                error!("Invalid integer at {position}");
-            }
-        })
-        .context("tokenize")?;
-    let expression = Expression::parse(tokens)
-        .inspect_err(|err| match err {
-            expression::ParseError::EndOfInput => error!("End of input"),
-            expression::ParseError::UnexpectedToken { span } => {
-                error!("Unexpected token at {span}");
-            }
-        })
-        .context("parse")?;
-    Ok(expression)
+#[derive(Debug, thiserror::Error)]
+pub enum ParseError {
+    #[error("Tokenize filed: {0}")]
+    Tokenizer(#[from] tokenizer::ParseError),
+    #[error("Parse expression filed: {0}")]
+    Expression(#[from] expression::ParseError),
+}
+
+impl DeserializeWrappable for Expression {
+    type SourceType = String;
+
+    #[expect(refining_impl_trait)]
+    fn from_source(source: String) -> Result<Self, ParseError> {
+        let tokens = source.parse()?;
+        let expression = Expression::parse(tokens)?;
+        Ok(expression)
+    }
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]

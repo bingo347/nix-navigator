@@ -4,6 +4,7 @@ use std::{borrow::Cow, env, path::Path, process};
 mod log;
 
 mod compiler;
+mod deserialize_wrapper;
 mod locales_data;
 
 fn main() {
@@ -34,11 +35,12 @@ fn main() {
                 .and_then(|v| v.as_sequence())
                 .expect("rule must have `do` sequence");
             for action in actions {
-                let Some(predicate) = action.get("if").and_then(|v| v.as_str()) else {
+                let Some(predicate) = action.get("if").cloned() else {
                     continue;
                 };
-                let predicate =
-                    compiler::parse_expression(predicate).expect("Failed to parse predicate");
+                let predicate: deserialize_wrapper::DeserializeWrapper<compiler::Expression> =
+                    serde_yaml::from_value(predicate).expect("Failed to parse predicate");
+                let predicate = predicate.0;
                 println!("Found predicate for {rule_name}: {predicate:#?}");
             }
         }
