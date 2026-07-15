@@ -1,6 +1,7 @@
 use super::Expression;
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct Template {
     pub strings: Vec<String>,
     pub substitutions: Vec<Expression>,

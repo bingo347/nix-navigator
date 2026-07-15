@@ -34,6 +34,16 @@ fn main() {
                 serde_yaml::from_value(rule_data.clone().into()).expect("Failed to parse rule");
             println!("Found rule '{rule_name}': {rule:#?}");
         }
+
+        info!("Compiling sections for locale: {locale_name}");
+        for (section_name, section_data) in &locale_data.sections {
+            for (key_name, key_data) in section_data {
+                let key_name = key_name.as_str().unwrap_or_default();
+                let template: parser::FullTemplate =
+                    serde_yaml::from_value(key_data.clone()).expect("Failed to parse key");
+                println!("Found key '{section_name}/{key_name}': {template:#?}");
+            }
+        }
     }
 }
 

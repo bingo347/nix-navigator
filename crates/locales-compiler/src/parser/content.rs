@@ -1,4 +1,4 @@
-use super::Expression;
+use super::{Expression, Template};
 use crate::deserialize_wrapper::DeserializeWrapper;
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -23,9 +23,21 @@ pub enum RuleArgumentType {
 pub enum RuleVariant {
     Conditional {
         r#if: DeserializeWrapper<Expression>,
-        r#then: String,
+        then: String,
     },
     Default {
         r#else: String,
+    },
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+pub enum FullTemplate {
+    Simple(DeserializeWrapper<Template>),
+    RuleSwitched {
+        #[serde(rename = "$switch")]
+        switch: DeserializeWrapper<Expression>,
+        #[serde(flatten)]
+        cases: HashMap<String, DeserializeWrapper<Template>>,
     },
 }

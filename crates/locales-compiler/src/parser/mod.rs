@@ -6,7 +6,11 @@ mod expression;
 mod template;
 mod tokenizer;
 
-pub use self::{content::Rule, expression::Expression};
+pub use self::{
+    content::{FullTemplate, Rule},
+    expression::Expression,
+    template::Template,
+};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ParseError {
@@ -26,6 +30,15 @@ impl DeserializeWrappable for Expression {
         let tokens = source.parse()?;
         let expression = Expression::parse(tokens)?;
         Ok(expression)
+    }
+}
+
+impl DeserializeWrappable for Template {
+    type SourceType = String;
+
+    #[expect(refining_impl_trait)]
+    fn from_source(source: String) -> Result<Self, ParseError> {
+        Ok(source.parse()?)
     }
 }
 
