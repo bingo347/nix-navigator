@@ -30,19 +30,9 @@ fn main() {
     for (locale_name, locale_data) in &locales {
         info!("Compiling rules for locale: {locale_name}");
         for (rule_name, rule_data) in &locale_data.rules {
-            let actions = rule_data
-                .get("do")
-                .and_then(|v| v.as_sequence())
-                .expect("rule must have `do` sequence");
-            for action in actions {
-                let Some(predicate) = action.get("if").cloned() else {
-                    continue;
-                };
-                let predicate: deserialize_wrapper::DeserializeWrapper<compiler::Expression> =
-                    serde_yaml::from_value(predicate).expect("Failed to parse predicate");
-                let predicate = predicate.0;
-                println!("Found predicate for {rule_name}: {predicate:#?}");
-            }
+            let rule: compiler::Rule =
+                serde_yaml::from_value(rule_data.clone().into()).expect("Failed to parse rule");
+            println!("Found rule '{rule_name}': {rule:#?}");
         }
     }
 }

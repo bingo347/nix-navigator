@@ -1,6 +1,7 @@
 use serde::{Deserialize, Deserializer};
 use std::fmt;
 
+#[derive(Debug)]
 #[repr(transparent)]
 pub struct DeserializeWrapper<T: DeserializeWrappable>(pub T);
 

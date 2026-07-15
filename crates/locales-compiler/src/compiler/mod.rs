@@ -1,10 +1,11 @@
 use crate::deserialize_wrapper::DeserializeWrappable;
 use std::fmt;
 
+mod content;
 mod expression;
 mod tokenizer;
 
-pub use expression::Expression;
+pub use self::{content::Rule, expression::Expression};
 
 #[derive(Debug, thiserror::Error)]
 pub enum ParseError {
