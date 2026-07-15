@@ -3,6 +3,7 @@ use std::fmt;
 
 mod content;
 mod expression;
+mod template;
 mod tokenizer;
 
 pub use self::{content::Rule, expression::Expression};
@@ -13,6 +14,8 @@ pub enum ParseError {
     Tokenizer(#[from] tokenizer::ParseError),
     #[error("Parse expression filed: {0}")]
     Expression(#[from] expression::ParseError),
+    #[error("Parse template filed: {0}")]
+    Template(#[from] template::ParseError),
 }
 
 impl DeserializeWrappable for Expression {

@@ -7,3 +7,4 @@ $sections:
       few: "{count} экземпляра"
       many: "{count} экземпляров"
     test_reference: "Текст с подстановкой-ссылкой: {test_plural(count)}"
+    test_escape: Некоторый {{ текст } здесь

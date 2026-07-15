@@ -6,6 +6,7 @@ $sections:
       one: One instance
       many: "{count} instances"
     test_reference: "Text with reference substitution: {test_plural(count)}"
+    test_escape: Some {{ text } here
     test_only_in_en: Only in english locale
   test_only_in_en_section:
     value: Only in english locale
