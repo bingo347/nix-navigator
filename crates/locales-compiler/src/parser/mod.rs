@@ -7,7 +7,7 @@ mod template;
 mod tokenizer;
 
 pub use self::{
-    content::{FullTemplate, Rule},
+    content::{FullTemplate, Locale, Rule},
     expression::Expression,
     template::Template,
 };

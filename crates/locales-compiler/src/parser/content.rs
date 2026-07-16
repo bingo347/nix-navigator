@@ -3,6 +3,14 @@ use crate::deserialize_wrapper::DeserializeWrapper;
 use serde::Deserialize;
 use std::collections::HashMap;
 
+#[derive(Debug, Default, Deserialize)]
+pub struct Locale {
+    #[serde(default, rename = "$rules")]
+    pub rules: HashMap<String, Rule>,
+    #[serde(default, rename = "$sections")]
+    pub sections: HashMap<String, HashMap<String, FullTemplate>>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Rule {
     pub args: HashMap<String, RuleArgumentType>,
