@@ -12,6 +12,7 @@ publish = false
 
 [workspace.dependencies]
 anyhow = "1.0.103"
+parking_lot = "0.12.5"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_yaml = "0.9.33"
 tauri = { version = "2.11.5", features = ["tracing", "config-toml"] }
