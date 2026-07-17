@@ -1,5 +1,6 @@
 use parking_lot::{Condvar, Mutex, Once};
 use std::{
+    alloc::{self, Layout},
     collections::VecDeque,
     hint,
     num::NonZeroUsize,
@@ -39,12 +40,19 @@ pub fn spawn<T: Send + 'static>(
 }
 
 impl<T> JoinHandle<T> {
-    pub fn join(self) -> thread::Result<T> {
+    pub fn join(self) -> T {
         let result_ptr = self.result_ptr;
         loop {
             let result_ptr = result_ptr.load(Ordering::Acquire);
             if !result_ptr.is_null() {
-                return *unsafe { Box::from_raw(result_ptr) };
+                let result = unsafe { result_ptr.read() };
+                unsafe {
+                    alloc::dealloc(result_ptr.cast(), Layout::new::<thread::Result<T>>());
+                }
+                match result {
+                    Ok(result) => return result,
+                    Err(err) => panic::resume_unwind(err),
+                }
             }
             hint::spin_loop();
         }
@@ -84,6 +92,13 @@ fn run_tasks() {
         expected.iter_mut().enumerate().for_each(|(i, v)| *v = i);
         expected
     };
-    let results: Vec<_> = handles.into_iter().map(|h| h.join().unwrap()).collect();
+    let results: Vec<_> = handles.into_iter().map(JoinHandle::join).collect();
     assert_eq!(results, expected);
+}
+
+#[test]
+#[should_panic = "task that panicked"]
+fn task_with_panic() {
+    panic::set_hook(Box::new(|_| {}));
+    spawn(|| panic!("task that panicked")).join();
 }

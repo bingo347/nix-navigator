@@ -63,9 +63,7 @@ fn run(locales_path: &Path) -> anyhow::Result<()> {
     }
 
     for handle in handles {
-        if handle.join().is_err() {
-            anyhow::bail!("Background task failed");
-        }
+        handle.join();
     }
 
     Ok(())
@@ -165,10 +163,7 @@ fn parse_locales(
     }
 
     for result in handles {
-        let (locale_name, locale) = match result.join() {
-            Ok(result) => result?,
-            Err(_) => anyhow::bail!("Background task panic"),
-        };
+        let (locale_name, locale) = result.join()?;
         locales.insert(locale_name, locale);
     }
 
