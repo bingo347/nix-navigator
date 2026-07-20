@@ -42,7 +42,7 @@ fn run(locales_path: &Path) -> anyhow::Result<()> {
                     let section_name = Arc::<str>::from(section_name.as_str());
                     section
                         .keys()
-                        .map(move |key| (section_name.clone(), Arc::<str>::from(key.as_str())))
+                        .map(move |key| (Arc::clone(&section_name), Arc::<str>::from(key.as_str())))
                 })
             })
             .fold(

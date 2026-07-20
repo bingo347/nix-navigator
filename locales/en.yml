@@ -1,7 +1,7 @@
 $rules:
   plural:
     args:
-      number: int
+      - number
     do:
       - if: "number == 1"
         then: one

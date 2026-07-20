@@ -13,17 +13,8 @@ pub struct Locale {
 
 #[derive(Debug, Deserialize)]
 pub struct Rule {
-    pub args: HashMap<String, RuleArgumentType>,
+    pub args: Vec<String>,
     pub r#do: Vec<RuleVariant>,
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum RuleArgumentType {
-    Str,
-    Float,
-    Int,
-    Bool,
 }
 
 #[derive(Debug, Deserialize)]

@@ -27,7 +27,7 @@ pub fn spawn<T: Send + 'static>(
     init();
     let result_ptr = Arc::new(AtomicPtr::<thread::Result<T>>::default());
     let task_wrap = Box::new({
-        let result_ptr = result_ptr.clone();
+        let result_ptr = Arc::clone(&result_ptr);
         move || {
             let result = panic::catch_unwind(task);
             result_ptr.store(Box::into_raw(Box::new(result)), Ordering::Release);

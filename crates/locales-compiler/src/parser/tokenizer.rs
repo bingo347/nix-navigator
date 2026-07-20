@@ -126,7 +126,7 @@ impl Token {
 
     pub fn identifier(&self) -> Option<Identifier> {
         if let TokenInner::Identifier(identifier) = &self.inner {
-            Some(Identifier::new(identifier.inner.clone(), self.span))
+            Some(Identifier::new(Arc::clone(&identifier.inner), self.span))
         } else {
             None
         }
@@ -157,7 +157,7 @@ impl Literal {
 
     pub fn as_string(&self) -> Option<Arc<str>> {
         if let LiteralInner::String(value) = &self.inner {
-            Some(value.clone())
+            Some(Arc::clone(value))
         } else {
             None
         }
@@ -284,7 +284,7 @@ impl Identifier {
     }
 
     pub fn as_inner(&self) -> Arc<str> {
-        self.inner.inner.clone()
+        Arc::clone(&self.inner.inner)
     }
 
     pub const fn span(&self) -> Span {
