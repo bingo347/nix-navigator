@@ -1819,6 +1819,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "nxn-locales"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "nxn-locales-compiler"
 version = "0.1.0"
 dependencies = [
