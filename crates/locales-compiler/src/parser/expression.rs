@@ -26,7 +26,7 @@ pub enum Expression {
     Sub(Box<Expression>, Box<Expression>, Span),
     Mul(Box<Expression>, Box<Expression>, Span),
     Div(Box<Expression>, Box<Expression>, Span),
-    Mod(Box<Expression>, Box<Expression>, Span),
+    Rem(Box<Expression>, Box<Expression>, Span),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -135,7 +135,7 @@ impl Expression {
             | Self::Sub(_, _, span)
             | Self::Mul(_, _, span)
             | Self::Div(_, _, span)
-            | Self::Mod(_, _, span) => *span,
+            | Self::Rem(_, _, span) => *span,
         }
     }
 
@@ -347,7 +347,7 @@ impl Expression {
                             "-" => Self::Sub(expr_left, expr_right, span),
                             "*" => Self::Mul(expr_left, expr_right, span),
                             "/" => Self::Div(expr_left, expr_right, span),
-                            "%" => Self::Mod(expr_left, expr_right, span),
+                            "%" => Self::Rem(expr_left, expr_right, span),
                             "&&" => Self::And(expr_left, expr_right, span),
                             "||" => Self::Or(expr_left, expr_right, span),
                             _ => unreachable!(),
@@ -388,7 +388,7 @@ impl PartialEq for Expression {
             | (Self::Sub(a, b, _), Self::Sub(c, d, _))
             | (Self::Mul(a, b, _), Self::Mul(c, d, _))
             | (Self::Div(a, b, _), Self::Div(c, d, _))
-            | (Self::Mod(a, b, _), Self::Mod(c, d, _)) => a == c && b == d,
+            | (Self::Rem(a, b, _), Self::Rem(c, d, _)) => a == c && b == d,
             _ => false,
         }
     }
