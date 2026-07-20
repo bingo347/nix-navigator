@@ -13,7 +13,7 @@ publish = false
 [workspace.dependencies]
 anyhow = "1.0.103"
 parking_lot = "0.12.5"
-serde = { version = "1.0.228", features = ["derive"] }
+serde = { version = "1.0.228", features = ["derive", "rc"] }
 serde_yaml = "0.9.33"
 tauri = { version = "2.11.5", features = ["tracing", "config-toml"] }
 tauri-build = "2.6.3"
@@ -31,3 +31,4 @@ clippy.cargo = { priority = -1, level = "warn" }
 clippy.nursery = { priority = -1, level = "warn" }
 clippy.multiple-crate-versions = "allow"
 clippy.use_self = "allow"
+clippy.missing_errors_doc = "allow"

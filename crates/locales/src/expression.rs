@@ -1,4 +1,4 @@
-use crate::Value;
+use crate::{EvalError, Value, VariablesMap};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::sync::Arc;
 
@@ -29,7 +29,7 @@ pub enum UnaryOperation {
     Minus = b'-',
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u16)]
 pub enum BinaryOperation {
     Add = u16::from_be_bytes(*b"\0+"),
@@ -45,6 +45,68 @@ pub enum BinaryOperation {
     Ge = u16::from_be_bytes(*b">="),
     Lt = u16::from_be_bytes(*b"\0<"),
     Le = u16::from_be_bytes(*b"<="),
+}
+
+impl Expression {
+    pub fn eval(
+        &self,
+        variables: &VariablesMap,
+        mut call_handler: impl FnMut(&str, Vec<Value>) -> Result<Value, EvalError>,
+    ) -> Result<Value, EvalError> {
+        self.eval_inner(variables, &mut call_handler)
+    }
+
+    fn eval_inner(
+        &self,
+        variables: &VariablesMap,
+        call_handler: &mut impl FnMut(&str, Vec<Value>) -> Result<Value, EvalError>,
+    ) -> Result<Value, EvalError> {
+        match self {
+            Self::Call { callee, args } => {
+                let args = args
+                    .iter()
+                    .map(|arg| arg.eval_inner(variables, call_handler))
+                    .collect::<Result<_, _>>()?;
+                call_handler(callee, args)
+            }
+            Self::Variable(var) => variables
+                .get(var.as_ref())
+                .cloned()
+                .ok_or_else(|| EvalError::VariableNotFound(Arc::clone(var))),
+            Self::Value(value) => Ok(value.clone()),
+            Self::UnaryOperation(op, expr) => {
+                let value = expr.eval_inner(variables, call_handler)?;
+                Ok(match op {
+                    UnaryOperation::Not => !value,
+                    UnaryOperation::Minus => -value,
+                })
+            }
+            Self::BinaryOperation(left, op, right) => {
+                let left = left.eval_inner(variables, call_handler)?;
+                if *op == BinaryOperation::And && !left.cast_boolean() {
+                    return Ok(left);
+                }
+                if *op == BinaryOperation::Or && left.cast_boolean() {
+                    return Ok(left);
+                }
+                let right = right.eval_inner(variables, call_handler)?;
+                Ok(match op {
+                    BinaryOperation::And | BinaryOperation::Or => right,
+                    BinaryOperation::Add => left + right,
+                    BinaryOperation::Sub => left - right,
+                    BinaryOperation::Mul => left * right,
+                    BinaryOperation::Div => left / right,
+                    BinaryOperation::Rem => left % right,
+                    BinaryOperation::Eq => (left == right).into(),
+                    BinaryOperation::Ne => (left != right).into(),
+                    BinaryOperation::Gt => (left > right).into(),
+                    BinaryOperation::Ge => (left >= right).into(),
+                    BinaryOperation::Lt => (left < right).into(),
+                    BinaryOperation::Le => (left <= right).into(),
+                })
+            }
+        }
+    }
 }
 
 impl Serialize for UnaryOperation {
@@ -120,4 +182,53 @@ impl<'de> Deserialize<'de> for BinaryOperation {
             .as_str(),
         ))
     }
+}
+
+#[test]
+fn eval_expression() {
+    let expr = Expression::BinaryOperation(
+        Box::new(Expression::Value("Hello ".into())),
+        BinaryOperation::Add,
+        Box::new(Expression::BinaryOperation(
+            Box::new(Expression::Variable("a".into())),
+            BinaryOperation::Mul,
+            Box::new(Expression::UnaryOperation(
+                UnaryOperation::Minus,
+                Box::new(Expression::Call {
+                    callee: "f".into(),
+                    args: vec![
+                        Expression::Variable("b".into()),
+                        Expression::BinaryOperation(
+                            Box::new(Expression::Value(0.into())),
+                            BinaryOperation::And,
+                            Box::new(Expression::Call {
+                                callee: "never".into(),
+                                args: vec![],
+                            }),
+                        ),
+                        Expression::BinaryOperation(
+                            Box::new(Expression::Value(1.into())),
+                            BinaryOperation::Or,
+                            Box::new(Expression::Call {
+                                callee: "never".into(),
+                                args: vec![],
+                            }),
+                        ),
+                    ],
+                }),
+            )),
+        )),
+    );
+
+    let variables = VariablesMap::from_iter([("a".into(), 2.into()), ("b".into(), 3.into())]);
+
+    assert_eq!(
+        expr.eval(&variables, |name, args| {
+            assert_eq!(name, "f");
+            assert_eq!(args, [3.into(), 0.into(), 1.into()]);
+            Ok(6.into())
+        })
+        .unwrap(),
+        "Hello -12".into()
+    );
 }
